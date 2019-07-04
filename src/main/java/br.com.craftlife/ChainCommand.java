@@ -2,24 +2,36 @@ package br.com.craftlife;
 
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChainCommand implements CommandExecutor, Listener {
+
     private ArrayList<Player> chainPlayers = new ArrayList<>();
+    private HashMap<String, Integer> points = new HashMap<>();
+
+    public ChainCommand() {
+        initScheduler();
+    }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -43,6 +55,19 @@ public class ChainCommand implements CommandExecutor, Listener {
                             player.sendMessage("§4Voce nao esta no chain");
                         }
                         break;
+                    case "point":
+                        if (strings.length < 2) {
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    "&cUso correto: /chain point <player>"));
+                        } else {
+                            Player target = Bukkit.getPlayer(strings[1]);
+                            if (target != null)
+                                mostraChainPoint(player, target.getName());
+                            else
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                        "&cO jogador '" + strings[1] + "' está offline"));
+                        }
+                        break;
                     case "setdeatch":
                         if(player.isOp()){
                             player.sendMessage("§2O player quando morrer ou deslogar do chain nascera aqui");
@@ -50,8 +75,10 @@ public class ChainCommand implements CommandExecutor, Listener {
                         }
                         break;
                     case "setarena":
-                        player.sendMessage("§2Arena setada com sucesso");
-                        ChainPlugin.config.setLocation("spawn", player.getLocation());
+                        if (player.isOp()) {
+                            player.sendMessage("§2Arena setada com sucesso");
+                            ChainPlugin.config.setLocation("spawn", player.getLocation());
+                        }
                         break;
                     default:
                         comandosDeAjuda(player);
@@ -67,6 +94,26 @@ public class ChainCommand implements CommandExecutor, Listener {
         return false;
     }
 
+    private void initScheduler() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+            for (Player player : chainPlayers) {
+                int points = 0;
+                for (ItemStack itemStack : player.getInventory().getContents()){
+                    if (itemStack == null) continue;
+                    if (itemStack.getType().equals(Material.DIAMOND_BLOCK) || itemStack.getType().equals(Material.IRON_BLOCK)){
+                        points += itemStack.getAmount();
+                    }
+                }
+                int realPoints = points - 1;
+                this.points.put(player.getName(), this.points.getOrDefault(player, 0) + realPoints);
+                player.getInventory().remove(Material.DIAMOND_BLOCK);
+                player.getInventory().remove(Material.IRON_BLOCK);
+                if (realPoints != 0)
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&2Você acaba de ganhar &e" + realPoints + " &2pontos no chain!"));
+            }
+        }, 6000, 6000);
+    }
     private boolean verificaSeTemSpawnESpawnDeatch() {
         boolean status = false;
         try{
@@ -90,9 +137,10 @@ public class ChainCommand implements CommandExecutor, Listener {
 
     private void comandosDeAjuda(Player player) {
         player.sendMessage("§4Comandos disponiveis");
-        player.sendMessage("§e/chain entrar    §2-> Entra na arena chain");
-        player.sendMessage("§e/chain sair      §2-> Sai da arena chain");
-        player.sendMessage("§e/chain list      §2-> Lista todos jogadores na arena chain");
+        player.sendMessage("§e/chain entrar       §2-> Entra na arena chain");
+        player.sendMessage("§e/chain sair         §2-> Sai da arena chain");
+        player.sendMessage("§e/chain list         §2-> Lista todos jogadores na arena chain");
+        player.sendMessage("§e/chain point <nick> §2-> Mostra pontuação de um jogador no chain");
 
         if(player.isOp()){
             player.sendMessage("§e/chain setdeatch §2-> Seta o local que o player vai nascer caso deslogue ou morra");
@@ -121,23 +169,32 @@ public class ChainCommand implements CommandExecutor, Listener {
 
         if(player.hasPermission("cl.vip")){
             player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
+            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, true));
+            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, true));
+            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, true));
         }else{
             player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
+            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, false));
+            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, false));
+            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, false));
         }
 
-        player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-        player.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
-        player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+
         player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
 
 
-        player.getInventory().addItem(new ItemStack(Material.BOW));
-        player.getInventory().addItem(new ItemStack(Material.ARROW,64));
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta bowMeta = bow.getItemMeta();
+        bowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
+        bow.setItemMeta(bowMeta);
+        player.getInventory().addItem(new ItemStack(bow));
+
+        player.getInventory().addItem(new ItemStack(Material.ARROW));
         player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE,10));
 
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
-        player.setHealth(10);
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         player.setAllowFlight(false);
 
         for(PotionEffect effect : player.getActivePotionEffects())
@@ -172,12 +229,41 @@ public class ChainCommand implements CommandExecutor, Listener {
         return temItem;
     }
 
+    private void mostraChainPoint(Player player, String target) {
+        int point = points.getOrDefault(target, 0);
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&2Pontuação de " + target + ": &e" + point));
+    }
+
+    public void removeAllPlayers() {
+        for (Player player : chainPlayers) {
+            chainSair(player);
+        }
+    }
+
+    private ItemStack getEnchantedArmor(Material material, boolean glow) {
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Armadura Chain"));
+        itemMeta.setUnbreakable(true);
+        if (glow)
+            itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event){
         if(verficaSePlayerTaNoChain(event.getPlayer())){
             //chain sair true // false
-
-            if(!event.getMessage().startsWith("/chain sair") && !event.getMessage().startsWith("/chain list")){
+            boolean cancelCommand = true;
+            for (String allowedcmd : ChainPlugin.config.getConfig().getStringList("allowed-cmds")){
+                if (event.getMessage().startsWith(allowedcmd)) {
+                    cancelCommand = false;
+                    break;
+                }
+            }
+            if(cancelCommand) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("§4Voce nao pode usar comandos no /chain, saia usando /chain sair");
             }
@@ -196,13 +282,36 @@ public class ChainCommand implements CommandExecutor, Listener {
     public void onDeath(PlayerDeathEvent e) {
         if(chainPlayers.contains(e.getEntity().getPlayer())){
             this.chainSair(e.getEntity().getPlayer());
+        }
+    }
 
+    @EventHandler
+    public void preDeath(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player))
+            return;
+        Player player = (Player) e.getEntity();
+        if (!chainPlayers.contains(player))
+            return;
+        if (e.getFinalDamage() >= player.getHealth()) {
+            player.getInventory().setChestplate(new ItemStack(Material.AIR));
+            player.getInventory().setLeggings(new ItemStack(Material.AIR));
+            player.getInventory().setBoots(new ItemStack(Material.AIR));
+            player.getInventory().remove(Material.IRON_SWORD);
+            player.getInventory().remove(Material.ARROW);
+            player.getInventory().remove(Material.BOW);
         }
     }
 
     @EventHandler
     public void onMove(PlayerTeleportEvent e) {
         if(chainPlayers.contains(e.getPlayer())){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent e) {
+        if (chainPlayers.contains(e.getWhoClicked()) && e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
             e.setCancelled(true);
         }
     }

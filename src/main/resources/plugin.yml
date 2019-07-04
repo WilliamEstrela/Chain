@@ -5,9 +5,7 @@ description: A test plugin
 load: POSTWORLD
 author: WilliamEstrela
 website: www.craftlife.com.br
-prefix: Testing
+prefix: Chain
 commands:
   chain:
     description: sistema de chain
-    aliases:
-    - chain
