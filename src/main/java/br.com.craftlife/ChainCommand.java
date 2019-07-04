@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -187,6 +188,13 @@ public class ChainCommand implements CommandExecutor, Listener {
         if(chainPlayers.contains(e.getEntity().getPlayer())){
             this.chainSair(e.getEntity().getPlayer());
 
+        }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        if(chainPlayers.contains(e.getPlayer())){
+            this.chainSair(e.getPlayer());
         }
     }
 
