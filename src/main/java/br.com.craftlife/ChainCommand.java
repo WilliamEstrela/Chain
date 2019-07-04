@@ -144,9 +144,10 @@ public class ChainCommand implements CommandExecutor, Listener {
                 } else {
                     String joined = String.join( ", ", joinedPlayers);
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&7[Chain] &2Os jogadores &e" + joined + "entraram no /chain"));
+                            "&7[Chain] &2Os jogadores &e" + joined + " &2entraram no /chain"));
                 }
             }
+            joinedPlayers.clear();
         }, 100, 100);
     }
     private boolean verificaSeTemSpawnESpawnDeatch() {
