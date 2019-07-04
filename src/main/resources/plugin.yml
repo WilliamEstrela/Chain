@@ -1,0 +1,13 @@
+main: br.com.craftlife.ChainPlugin
+name: TestPlugin
+version: '1.0'
+description: A test plugin
+load: POSTWORLD
+author: WilliamEstrela
+website: www.craftlife.com.br
+prefix: Testing
+commands:
+  chain:
+    description: sistema de chain
+    aliases:
+    - chain
