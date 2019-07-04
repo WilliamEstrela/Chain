@@ -49,7 +49,7 @@
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>shaded</shadedClassifierName>
-                    <outputDirectory>/Users/williamestrela/Desktop/Programacao/servidorTeste/plugins</outputDirectory>
+                    <outputDirectory>C:\Users\bruno\Documents\GitHub\Chain\target</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

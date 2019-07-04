@@ -1,12 +1,7 @@
 package br.com.craftlife;
 
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class ChainPlugin extends JavaPlugin implements CommandExecutor {
 
