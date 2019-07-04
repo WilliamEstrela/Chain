@@ -232,7 +232,7 @@ public class ChainCommand implements CommandExecutor, Listener {
     private void mostraChainPoint(Player player, String target) {
         int point = points.getOrDefault(target, 0);
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                "&2Pontuação de " + player.getName() + ": &e" + point));
+                "&2Pontuação de " + target + ": &e" + point));
     }
 
     public void removeAllPlayers() {
