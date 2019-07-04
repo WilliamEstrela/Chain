@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
@@ -121,13 +123,17 @@ public class ChainCommand implements CommandExecutor, Listener {
 
         if(player.hasPermission("cl.vip")){
             player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
+            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, true));
+            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, true));
+            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, true));
         }else{
             player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
+            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, false));
+            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, false));
+            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, false));
         }
 
-        player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-        player.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
-        player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+
         player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
 
 
@@ -170,6 +176,17 @@ public class ChainCommand implements CommandExecutor, Listener {
             }
         }
         return temItem;
+    }
+
+    private ItemStack getEnchantedArmor(Material material, boolean glow) {
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Armadura Chain"));
+        itemMeta.setUnbreakable(true);
+        if (glow)
+            itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 
     @EventHandler
