@@ -128,6 +128,9 @@ public class ChainCommand implements CommandExecutor, Listener {
         player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
         player.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
         player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+        player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+
+
         player.getInventory().addItem(new ItemStack(Material.BOW));
         player.getInventory().addItem(new ItemStack(Material.ARROW,64));
         player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE,10));
