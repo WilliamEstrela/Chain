@@ -120,7 +120,7 @@ public class ChainCommand implements CommandExecutor, Listener {
         player.teleport(ChainPlugin.config.getLocation("spawn").clone());
 
         if(player.hasPermission("cl.vip")){
-            player.getInventory().setItemInMainHand(new ItemStack(Material.DIAMOND_BLOCK));
+            player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
         }else{
             player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
         }
