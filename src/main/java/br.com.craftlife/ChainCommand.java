@@ -195,7 +195,7 @@ public class ChainCommand implements CommandExecutor, Listener {
     @EventHandler
     public void onMove(PlayerTeleportEvent e) {
         if(chainPlayers.contains(e.getPlayer())){
-            this.chainSair(e.getPlayer());
+            e.setCancelled(true);
         }
     }
 
