@@ -22,7 +22,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChainCommand implements CommandExecutor, Listener {
 
@@ -96,6 +98,8 @@ public class ChainCommand implements CommandExecutor, Listener {
 
     private void initScheduler() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+            List<String> dominants = new ArrayList<>();
+            int dominantPoints = 0;
             for (Player player : chainPlayers) {
                 int points = 0;
                 for (ItemStack itemStack : player.getInventory().getContents()){
@@ -111,6 +115,25 @@ public class ChainCommand implements CommandExecutor, Listener {
                 if (realPoints != 0)
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',
                             "&2Você acaba de ganhar &e" + realPoints + " &2pontos no chain!"));
+                if (realPoints >= dominantPoints) {
+                    if (realPoints == dominantPoints)
+                        dominants.add(player.getName());
+                    else {
+                        dominantPoints = realPoints;
+                        dominants.clear();
+                        dominants.add(player.getName());
+                    }
+                }
+            }
+            if (!dominants.isEmpty()) {
+                if (dominants.size() == 1)
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &6O jogador &e" + dominants.get(0) + " &6está dominando a arena chain!"));
+                else {
+                    String alldominants = String.join(", ", dominants);
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &6Os jogadores: &e" + alldominants + " &6estão dominando a arena chain!"));
+                }
             }
         }, 6000, 6000);
     }
