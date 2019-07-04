@@ -23,14 +23,16 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChainCommand implements CommandExecutor, Listener {
 
     private ArrayList<Player> chainPlayers = new ArrayList<>();
     private HashMap<String, Integer> points = new HashMap<>();
+    private List<String> joinedPlayers = new ArrayList<>();
 
     public ChainCommand() {
-        initScheduler();
+        initSchedulers();
     }
 
     @Override
@@ -94,8 +96,10 @@ public class ChainCommand implements CommandExecutor, Listener {
         return false;
     }
 
-    private void initScheduler() {
+    private void initSchedulers() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+            List<String> dominants = new ArrayList<>();
+            int dominantPoints = 0;
             for (Player player : chainPlayers) {
                 int points = 0;
                 for (ItemStack itemStack : player.getInventory().getContents()){
@@ -111,8 +115,40 @@ public class ChainCommand implements CommandExecutor, Listener {
                 if (realPoints != 0)
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',
                             "&2Você acaba de ganhar &e" + realPoints + " &2pontos no chain!"));
+                if (realPoints >= dominantPoints) {
+                    if (realPoints == dominantPoints)
+                        dominants.add(player.getName());
+                    else {
+                        dominantPoints = realPoints;
+                        dominants.clear();
+                        dominants.add(player.getName());
+                    }
+                }
+            }
+            if (!dominants.isEmpty()) {
+                if (dominants.size() == 1)
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &6O jogador &e" + dominants.get(0) + " &6está dominando a arena chain!"));
+                else {
+                    String alldominants = String.join(", ", dominants);
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &6Os jogadores: &e" + alldominants + " &6estão dominando a arena chain!"));
+                }
             }
         }, 6000, 6000);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+            if (!joinedPlayers.isEmpty()) {
+                if (joinedPlayers.size() == 1) {
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &2O jogador &e" + joinedPlayers.get(0) + " &2entrou no /chain"));
+                } else {
+                    String joined = String.join( ", ", joinedPlayers);
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &2Os jogadores &e" + joined + " &2entraram no /chain"));
+                }
+            }
+            joinedPlayers.clear();
+        }, 100, 100);
     }
     private boolean verificaSeTemSpawnESpawnDeatch() {
         boolean status = false;
@@ -202,7 +238,7 @@ public class ChainCommand implements CommandExecutor, Listener {
             player.removePotionEffect(effect.getType());
         }
 
-        Bukkit.broadcastMessage("§2O jogador §e" + player.getDisplayName() + "§2 entrou no /chain");
+        joinedPlayers.add(player.getName());
         chainPlayers.add(player);
     }
 
