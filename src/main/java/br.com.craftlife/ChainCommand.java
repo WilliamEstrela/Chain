@@ -118,11 +118,22 @@ public class ChainCommand implements CommandExecutor, Listener {
     private void colocaJogadorNaArenaChain(Player player) {
         player.sendMessage("§2Voce entrou no /chain, para sair /chain sair");
         player.teleport(ChainPlugin.config.getLocation("spawn").clone());
-        player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
+
+        if(player.hasPermission("cl.vip")){
+            player.getInventory().setItemInMainHand(new ItemStack(Material.DIAMOND_BLOCK));
+        }else{
+            player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
+        }
+
         player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
         player.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
         player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
-        player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        if(player.hasPermission("cl.vip")){
+            player.getInventory().setItemInMainHand(new ItemStack(Material.DIAMOND_SWORD));
+        }else{
+            player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+        }
+
         player.getInventory().addItem(new ItemStack(Material.BOW));
         player.getInventory().addItem(new ItemStack(Material.ARROW,64));
         player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE,10));
