@@ -22,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,9 +29,10 @@ public class ChainCommand implements CommandExecutor, Listener {
 
     private ArrayList<Player> chainPlayers = new ArrayList<>();
     private HashMap<String, Integer> points = new HashMap<>();
+    private List<String> joinedPlayers = new ArrayList<>();
 
     public ChainCommand() {
-        initScheduler();
+        initSchedulers();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ChainCommand implements CommandExecutor, Listener {
         return false;
     }
 
-    private void initScheduler() {
+    private void initSchedulers() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
             List<String> dominants = new ArrayList<>();
             int dominantPoints = 0;
@@ -136,6 +136,18 @@ public class ChainCommand implements CommandExecutor, Listener {
                 }
             }
         }, 6000, 6000);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+            if (!joinedPlayers.isEmpty()) {
+                if (joinedPlayers.size() == 1) {
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &2O jogador &e" + joinedPlayers.get(0) + " &2entrou no /chain"));
+                } else {
+                    String joined = String.join( ", ", joinedPlayers);
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7[Chain] &2Os jogadores &e" + joined + "entraram no /chain"));
+                }
+            }
+        }, 100, 100);
     }
     private boolean verificaSeTemSpawnESpawnDeatch() {
         boolean status = false;
@@ -225,7 +237,7 @@ public class ChainCommand implements CommandExecutor, Listener {
             player.removePotionEffect(effect.getType());
         }
 
-        Bukkit.broadcastMessage("§2O jogador §e" + player.getDisplayName() + "§2 entrou no /chain");
+        joinedPlayers.add(player.getName());
         chainPlayers.add(player);
     }
 
