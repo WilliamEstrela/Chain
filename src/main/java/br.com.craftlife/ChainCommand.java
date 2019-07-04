@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChainCommand implements CommandExecutor, Listener {
     private ArrayList<Player> chainPlayers = new ArrayList<>();
@@ -192,8 +193,14 @@ public class ChainCommand implements CommandExecutor, Listener {
     public void onCommand(PlayerCommandPreprocessEvent event){
         if(verficaSePlayerTaNoChain(event.getPlayer())){
             //chain sair true // false
-
-            if(!event.getMessage().startsWith("/chain sair") && !event.getMessage().startsWith("/chain list")){
+            boolean cancelCommand = true;
+            for (String allowedcmd : ChainPlugin.config.getConfig().getStringList("allowed-cmds")){
+                if (event.getMessage().startsWith(allowedcmd)) {
+                    cancelCommand = false;
+                    break;
+                }
+            }
+            if(cancelCommand) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("§4Voce nao pode usar comandos no /chain, saia usando /chain sair");
             }
