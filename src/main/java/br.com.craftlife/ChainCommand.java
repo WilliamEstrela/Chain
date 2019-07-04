@@ -137,8 +137,13 @@ public class ChainCommand implements CommandExecutor, Listener {
         player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
 
 
-        player.getInventory().addItem(new ItemStack(Material.BOW));
-        player.getInventory().addItem(new ItemStack(Material.ARROW,64));
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta bowMeta = bow.getItemMeta();
+        bowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
+        bow.setItemMeta(bowMeta);
+        player.getInventory().addItem(new ItemStack(bow));
+
+        player.getInventory().addItem(new ItemStack(Material.ARROW));
         player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE,10));
 
         player.setGameMode(GameMode.SURVIVAL);
