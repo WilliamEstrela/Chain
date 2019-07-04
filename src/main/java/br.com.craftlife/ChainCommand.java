@@ -143,7 +143,7 @@ public class ChainCommand implements CommandExecutor, Listener {
 
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
-        player.setHealth(10);
+        player.setHealth(20);
         player.setAllowFlight(false);
 
         for(PotionEffect effect : player.getActivePotionEffects())
