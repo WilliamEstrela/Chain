@@ -1,5 +1,5 @@
 main: br.com.craftlife.ChainPlugin
-name: TestPlugin
+name: Chain
 version: '1.0'
 description: A test plugin
 load: POSTWORLD
