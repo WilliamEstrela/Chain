@@ -2,6 +2,7 @@ package br.com.craftlife;
 
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +150,7 @@ public class ChainCommand implements CommandExecutor, Listener {
 
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
-        player.setHealth(20);
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
         player.setAllowFlight(false);
 
         for(PotionEffect effect : player.getActivePotionEffects())
