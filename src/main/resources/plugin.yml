@@ -1,11 +1,10 @@
-main: br.com.craftlife.ChainPlugin
-name: Chain
-version: '1.0'
-description: A test plugin
-load: POSTWORLD
+main: br.com.craftlife.chain.ChainPlugin
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
 author: WilliamEstrela
 website: www.craftlife.com.br
-prefix: Chain
+
 commands:
   chain:
-    description: sistema de chain
+    description: Main command

@@ -1,6 +1,7 @@
-package br.com.craftlife;
+package br.com.craftlife.chain;
 
-
+import br.com.craftlife.chain.resource.Message;
+import br.com.craftlife.chain.utils.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -27,11 +29,14 @@ import java.util.List;
 
 public class ChainCommand implements CommandExecutor, Listener {
 
+    private ChainPlugin plugin;
+
     private ArrayList<Player> chainPlayers = new ArrayList<>();
     private HashMap<String, Integer> points = new HashMap<>();
     private List<String> joinedPlayers = new ArrayList<>();
 
-    public ChainCommand() {
+    public ChainCommand(ChainPlugin plugin) {
+        this.plugin = plugin;
         initSchedulers();
     }
 
@@ -40,64 +45,57 @@ public class ChainCommand implements CommandExecutor, Listener {
         if(commandSender instanceof Player){
             Player player = (Player) commandSender;
             if(strings.length > 0){
-                switch (strings[0]){
-                    case "entrar":
-                        boolean temItem = verificaSeTemItensOuArmadura(player);
-                        if(!temItem){
-                            colocaJogadorNaArenaChain(player);
-                        }
-                        break;
-                    case "list":
-                        mostraListaDeJogadores(player);
-                        break;
-                    case "sair":
-                        if(verficaSePlayerTaNoChain(player)){
-                            chainSair(player);
-                        }else{
-                            player.sendMessage("§4Voce nao esta no chain");
-                        }
-                        break;
-                    case "point":
-                        if (strings.length < 2) {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                    "&cUso correto: /chain point <player>"));
-                        } else {
-                            Player target = Bukkit.getPlayer(strings[1]);
-                            if (target != null)
-                                mostraChainPoint(player, target.getName());
-                            else
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                        "&cO jogador '" + strings[1] + "' está offline"));
-                        }
-                        break;
-                    case "setdeatch":
-                        if(player.isOp()){
-                            player.sendMessage("§2O player quando morrer ou deslogar do chain nascera aqui");
-                            ChainPlugin.config.setLocation("deatch", player.getLocation());
-                        }
-                        break;
-                    case "setarena":
-                        if (player.isOp()) {
-                            player.sendMessage("§2Arena setada com sucesso");
-                            ChainPlugin.config.setLocation("spawn", player.getLocation());
-                        }
-                        break;
-                    default:
+                if (strings[0].equalsIgnoreCase(new Message("commands.join").getString())) {
+                    boolean temItem = verificaSeTemItensOuArmadura(player);
+                    if(!temItem){
+                        colocaJogadorNaArenaChain(player);
+                    }
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.exit").getString())) {
+                    if(chainPlayers.contains(player)) {
+                        chainSair(player);
+                    } else {
+                        new Message("messages.exit.error").colored().send(player);
+                    }
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.cabin").getString())) {
+                    // Em breve
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.list").getString())) {
+                    mostraListaDeJogadores(player);
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.point").getString())) {
+                    if (strings.length < 2) {
                         comandosDeAjuda(player);
-                        break;
+                    } else {
+                        Player target = Bukkit.getPlayer(strings[1]);
+                        if (target != null)
+                            mostraChainPoint(player, target.getName());
+                        else
+                            new Message("messages.point.player-offline").set("player", strings[1]).colored().send(player);
+                    }
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.set").getString())) {
+                    if (strings.length < 2) {
+                        comandosDeAjuda(player);
+                    } else {
+                        String position = strings[1].toLowerCase();
+                        if (position.equals("arena") || position.equals("exit")
+                            || position.equals("cabin")){
+                            new Message("messages.set.success").set("position", position).colored().send(player);
+                            plugin.getConfig().set("locations." + position, LocationUtils.serialize(player.getLocation()));
+                            plugin.saveConfig();
+                        } else {
+                            comandosDeAjuda(player);
+                        }
+                    }
+                } else {
+                    comandosDeAjuda(player);
                 }
-
-            }else{
+            } else {
                 comandosDeAjuda(player);
             }
-
-
         }
-        return false;
+        return true;
     }
 
     private void initSchedulers() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.getInstance(), () -> {
             List<String> dominants = new ArrayList<>();
             int dominantPoints = 0;
             for (Player player : chainPlayers) {
@@ -113,8 +111,7 @@ public class ChainCommand implements CommandExecutor, Listener {
                 player.getInventory().remove(Material.DIAMOND_BLOCK);
                 player.getInventory().remove(Material.IRON_BLOCK);
                 if (realPoints != 0)
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&2Você acaba de ganhar &e" + realPoints + " &2pontos no chain!"));
+                    new Message("messages.point.receiver").set("points", String.valueOf(realPoints)).colored().send(player);
                 if (realPoints >= dominantPoints) {
                     if (realPoints == dominantPoints)
                         dominants.add(player.getName());
@@ -127,81 +124,68 @@ public class ChainCommand implements CommandExecutor, Listener {
             }
             if (!dominants.isEmpty()) {
                 if (dominants.size() == 1)
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&7[Chain] &6O jogador &e" + dominants.get(0) + " &6está dominando a arena chain!"));
+                    new Message("messages.arena.domination.one").set("player", dominants.get(0)).colored().broadcast();
                 else {
                     String alldominants = String.join(", ", dominants);
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&7[Chain] &6Os jogadores: &e" + alldominants + " &6estão dominando a arena chain!"));
+                    new Message("messages.arena.domination.more").set("players", alldominants).colored().broadcast();
                 }
             }
         }, 6000, 6000);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.instance, () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.getInstance(), () -> {
             if (!joinedPlayers.isEmpty()) {
                 if (joinedPlayers.size() == 1) {
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&7[Chain] &2O jogador &e" + joinedPlayers.get(0) + " &2entrou no /chain"));
+                    new Message("messages.join.broadcast.one").set("player", joinedPlayers.get(0)).colored().broadcast();
                 } else {
                     String joined = String.join( ", ", joinedPlayers);
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                            "&7[Chain] &2Os jogadores &e" + joined + " &2entraram no /chain"));
+                    new Message("messages.join.broadcast.more").set("players", joined).colored().broadcast();
                 }
             }
             joinedPlayers.clear();
         }, 100, 100);
     }
     private boolean verificaSeTemSpawnESpawnDeatch() {
-        boolean status = false;
         try{
-            Location loc1 = ChainPlugin.config.getLocation("spawn");
-            Location loc2 = ChainPlugin.config.getLocation("deatch");
+            Location loc1 = LocationUtils.deserialize(plugin.getConfig().getString("locations.arena"));
+            Location loc2 = LocationUtils.deserialize(plugin.getConfig().getString("locations.exit"));
 
-            status = true;
-        }catch (Exception e){
-            status = false;
-        }
-        return status;
-    }
-
-    private boolean verficaSePlayerTaNoChain(Player player) {
-        if(chainPlayers.contains(player)){
             return true;
-        }else{
+        }catch (Exception e){
             return false;
         }
     }
 
     private void comandosDeAjuda(Player player) {
-        player.sendMessage("§4Comandos disponiveis");
-        player.sendMessage("§e/chain entrar       §2-> Entra na arena chain");
-        player.sendMessage("§e/chain sair         §2-> Sai da arena chain");
-        player.sendMessage("§e/chain list         §2-> Lista todos jogadores na arena chain");
-        player.sendMessage("§e/chain point <nick> §2-> Mostra pontuação de um jogador no chain");
+        new Message("messages.help.player", true)
+                .set("command_join", new Message("commands.join").getString())
+                .set("command_exit", new Message("commands.exit").getString())
+                .set("command_cabin", new Message("commands.cabin").getString())
+                .set("command_list", new Message("commands.list").getString())
+                .set("command_point", new Message("commands.point").getString())
+                .colored().send(player);
 
-        if(player.isOp()){
-            player.sendMessage("§e/chain setdeatch §2-> Seta o local que o player vai nascer caso deslogue ou morra");
-            player.sendMessage("§e/chain setarena     §2-> Seta o spawn da arena chain");
+        if (player.isOp()) {
+            new Message("messages.help.admin", true)
+                    .set("command_set", new Message("commands.set").getString())
+                    .colored().send(player);
         }
     }
 
-    private void mostraListaDeJogadores(Player p) {
+    private void mostraListaDeJogadores(Player player) {
         if(chainPlayers.isEmpty()){
-            p.sendMessage(  "§4Nao ha jogadores na arena chain");
+            new Message("messages.list.no-players").colored().send(player);
         }else{
-            p.sendMessage("§2Jogadores na arena chain" );
-            StringBuilder buffer = new StringBuilder();
-            for (Player player : chainPlayers) {
-                buffer.insert(0, player.getDisplayName());
-                buffer.insert(0, " ");
-            }
-            p.sendMessage(buffer.toString());
+            List<String> players = new ArrayList<>();
+            for (Player chainPlayer : chainPlayers) players.add(chainPlayer.getName());
+            String strPlayers = String.join(", ", players);
+            new Message("messages.list.show").set("players", strPlayers).colored().send(player);
         }
 
     }
 
     private void colocaJogadorNaArenaChain(Player player) {
-        player.sendMessage("§2Voce entrou no /chain, para sair /chain sair");
-        player.teleport(ChainPlugin.config.getLocation("spawn").clone());
+        new Message("messages.join.player").set("command_exit", new Message("commands.exit").getString())
+                .colored().send(player);
+        player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.arena")));
 
         if(player.hasPermission("cl.vip")){
             player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
@@ -237,8 +221,8 @@ public class ChainCommand implements CommandExecutor, Listener {
         {
             player.removePotionEffect(effect.getType());
         }
-
-        joinedPlayers.add(player.getName());
+        if (!joinedPlayers.contains(player.getName()))
+            joinedPlayers.add(player.getName());
         chainPlayers.add(player);
     }
 
@@ -257,9 +241,9 @@ public class ChainCommand implements CommandExecutor, Listener {
         }
 
         if(temItem || temArmadura){
-            player.sendMessage("§4Voce precisa limpar o inventario para entrar no chain");
+            new Message("messages.join.error.inventory").colored().send(player);
             if(temArmadura){
-                player.sendMessage("§4Voce tem armadura tambem, lembre-se de retirar ela");
+                new Message("messages.join.error.armor").colored().send(player);
             }
         }
         return temItem;
@@ -267,8 +251,7 @@ public class ChainCommand implements CommandExecutor, Listener {
 
     private void mostraChainPoint(Player player, String target) {
         int point = points.getOrDefault(target, 0);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                "&2Pontuação de " + target + ": &e" + point));
+        new Message("messages.point.see").set("player", target).set("points", String.valueOf(point)).colored().send(player);
     }
 
     public void removeAllPlayers() {
@@ -280,7 +263,7 @@ public class ChainCommand implements CommandExecutor, Listener {
     private ItemStack getEnchantedArmor(Material material, boolean glow) {
         ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Armadura Chain"));
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Chain armor!"));
         itemMeta.setUnbreakable(true);
         if (glow)
             itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
@@ -288,21 +271,16 @@ public class ChainCommand implements CommandExecutor, Listener {
         return itemStack;
     }
 
-    @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event){
-        if(verficaSePlayerTaNoChain(event.getPlayer())){
-            //chain sair true // false
-            boolean cancelCommand = true;
-            for (String allowedcmd : ChainPlugin.config.getConfig().getStringList("allowed-cmds")){
-                if (event.getMessage().startsWith(allowedcmd)) {
-                    cancelCommand = false;
-                    break;
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onCommand(PlayerCommandPreprocessEvent e){
+        if(chainPlayers.contains(e.getPlayer())){
+            for (String allowedcmd : plugin.getConfig().getStringList("allowed-cmds")){
+                if (e.getMessage().startsWith(allowedcmd)) {
+                    return;
                 }
             }
-            if(cancelCommand) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage("§4Voce nao pode usar comandos no /chain, saia usando /chain sair");
-            }
+            e.setCancelled(true);
+            new Message("messages.arena.blocked-command").colored().send(e.getPlayer());
         }
     }
 
@@ -355,7 +333,7 @@ public class ChainCommand implements CommandExecutor, Listener {
     private void chainSair(Player player){
         chainPlayers.remove(player);
         player.getInventory().clear();
-        player.teleport(ChainPlugin.config.getLocation("deatch"));
-        player.sendMessage("§2Voce saiu do /chain");
+        player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.exit")));
+        new Message("messages.exit.success").colored().send(player);
     }
 }
