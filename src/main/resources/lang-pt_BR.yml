@@ -1,0 +1,46 @@
+commands:
+  join: entrar
+  exit: sair
+  cabin: camarote
+  list: listar
+  point: pontos
+  set: setar
+
+messages:
+  arena:
+    blocked-command: '&4Você não pode usar este comando dentro da arena! saia usando /chain {command_exit}'
+    domination:
+      one: '&7[Chain] &e{player} &6está dominando a arena!'
+      more: '&7[Chain] &6Os jogadores &e{players} &6estão dominando a arena!'
+  help:
+    player:
+      - '&7[Chain] &cComandos disponiveis::'
+      - '&7[Chain] &e/chain {command_join} &a- Entra na arena chain'
+      - '&7[Chain] &e/chain {command_exit} &a- Sai da arena chain'
+      - '&7[Chain] &e/chain {command_cabin} &a- Camarote da arena chain'
+      - '&7[Chain] &e/chain {command_list} &a- Mostra os jogadores na arena'
+      - '&7[Chain] &e/chain {command_point} <nick> &a- Mostra a pontuação do jogador'
+    admin:
+      - '&7[Chain] &c/chain {command_set} <arena/exit/cabin> &7- Define as posições'
+  join:
+    player: '&7[Chain] &2Você entrou no /chain, use ''/chain {command_exit}'' para sair.'
+    broadcast:
+      one: '&7[Chain] &e{player} &2entrou na arena chain!'
+      more: '&7[Chain] &2Os jogadores &e{players} &2entraram na arena chain!'
+    error:
+      inventory: '&4Você precisa limpar seu inventario para entrar no chain'
+      armor: '&4Tire sua armadura também!'
+  exit:
+    success: '&7[Chain] &cVocê saiu do chain!'
+    error: '&7[Chain] &cVocê não está na arena chain!.'
+  list:
+    show:
+      - '&7[Chain] &2Jogadores na arena chain:'
+      - '&7[Chain] &e{players}'
+    no-players: '&4Não tem nenhum jogador no chain!'
+  point:
+    see: '&7[Chain] &2Pontuação de {player}: {points}'
+    receive: '&7[Chain] &2Você acaba de ganhar &e{points} &2pontos na arena!'
+    player-offline: '&4{player} está offline!'
+  set:
+    success: '&7[Chain] &aPosição ''{position}'' definida com sucesso!'

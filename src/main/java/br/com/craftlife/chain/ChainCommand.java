@@ -280,7 +280,8 @@ public class ChainCommand implements CommandExecutor, Listener {
                 }
             }
             e.setCancelled(true);
-            new Message("messages.arena.blocked-command").colored().send(e.getPlayer());
+            new Message("messages.arena.blocked-command").set("command_exit", new Message("commands.exit").getString())
+                    .colored().send(e.getPlayer());
         }
     }
 
