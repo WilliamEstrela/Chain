@@ -57,7 +57,8 @@ public class ChainCommand implements CommandExecutor, Listener {
                         new Message("messages.exit.error").colored().send(player);
                     }
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.cabin").getString())) {
-                    // Em breve
+                    player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.cabin")));
+                    new Message("messages.cabin.success").colored().send(player);
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.list").getString())) {
                     showPlayerList(player);
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.point").getString())) {

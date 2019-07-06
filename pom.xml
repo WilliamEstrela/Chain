@@ -6,9 +6,9 @@
 
     <groupId>br.com.craftlife.chainplugin</groupId>
     <artifactId>chain</artifactId>
-    <name>Chain</name>
+    <name>ChainmailBattle</name>
     <description>A war plugin made for the craftlife server</description>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
