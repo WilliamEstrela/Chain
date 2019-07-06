@@ -1,0 +1,46 @@
+commands:
+  join: join
+  exit: exit
+  cabin: cabin
+  list: list
+  point: point
+  set: set
+
+messages:
+  arena:
+    blocked-command: '&4You can not use this command inside the arena! quit using /chain exit'
+    domination:
+      one: '&7[Chain] &e{player} &6is dominating the chain arena'
+      more: '&7[Chain] &6The players &e{players} &6are dominating the arena'
+  help:
+    player:
+      - '&7[Chain] &cCommands available:'
+      - '&7[Chain] &e/chain {command_join} &a- Join the chain arena'
+      - '&7[Chain] &e/chain {command_exit} &a- Get out of the chain arena'
+      - '&7[Chain] &e/chain {command_cabin} &a- Chain arena cabin'
+      - '&7[Chain] &e/chain {command_list} &a- List all players in the arena'
+      - '&7[Chain] &e/chain {command_point} <nick> &a- Shows the score of a player'
+    admin:
+      - '&7[Chain] &c/chain {command_set} <arena/exit/cabin> &7- Sets the positions'
+  join:
+    player: '&7[Chain] &2You entered the /chain, to leave /chain {command_exit}.'
+    broadcast:
+      one: '&7[Chain] &e{player} &2entered the chain arena!'
+      more: '&7[Chain] &2Players &e{players} &2entered the chain arena.'
+    error:
+      inventory: '&4You need to clear the inventory to enter the chain'
+      armor: '&4Take off your armor too!'
+  exit:
+    success: '&7[Chain] &cYou left the chain.'
+    error: '&7[Chain] &cYou''re not in the chain.'
+  list:
+    show:
+      - '&7[Chain] &2Players in the chain arena:'
+      - '&7[Chain] &e{players}'
+    no-players: '&4There are no players in the arena!'
+  point:
+    see: '&7[Chain] &2{player}''s points: {points}'
+    receive: '&7[Chain] &2You just won &e{points} &2arena points'
+    player-offline: '&4{player} is offline!'
+  set:
+    success: '&7[Chain] &aPosition ''{position}'' defined successfully!'

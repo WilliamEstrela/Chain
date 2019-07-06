@@ -1,10 +1,13 @@
-spawn:
-  - x:
-  - y:
-  - z:
+#Available languages: en_US and pt_BR
+language: en_US
 
 allowed-cmds:
-  - '/chain sair'
-  - '/chain list'
-  - '/g'
-  - '/.'
+  - '/chain '
+  - '/g '
+  - '/. '
+
+locations:
+  arena: world;0;100;0;0;0
+  exit: world;0;100;0;0;0
+  cabin: world;0;100;0;0;0
+
