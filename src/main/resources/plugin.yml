@@ -2,7 +2,7 @@ main: br.com.craftlife.chain.ChainPlugin
 name: ${project.name}
 version: ${project.version}
 description: ${project.description}
-author: WilliamEstrela
+authors: [Brun0XP, WilliamEstrela]
 website: www.craftlife.com.br
 
 commands:

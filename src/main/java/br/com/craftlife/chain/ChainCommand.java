@@ -46,33 +46,33 @@ public class ChainCommand implements CommandExecutor, Listener {
             Player player = (Player) commandSender;
             if(strings.length > 0){
                 if (strings[0].equalsIgnoreCase(new Message("commands.join").getString())) {
-                    boolean temItem = verificaSeTemItensOuArmadura(player);
-                    if(!temItem){
-                        colocaJogadorNaArenaChain(player);
+                    boolean hasItem = verifyInventory(player);
+                    if(!hasItem){
+                        putPlayerInArena(player);
                     }
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.exit").getString())) {
                     if(chainPlayers.contains(player)) {
-                        chainSair(player);
+                        chainExit(player);
                     } else {
                         new Message("messages.exit.error").colored().send(player);
                     }
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.cabin").getString())) {
                     // Em breve
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.list").getString())) {
-                    mostraListaDeJogadores(player);
+                    showPlayerList(player);
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.point").getString())) {
                     if (strings.length < 2) {
-                        comandosDeAjuda(player);
+                        help(player);
                     } else {
                         Player target = Bukkit.getPlayer(strings[1]);
                         if (target != null)
-                            mostraChainPoint(player, target.getName());
+                            showPoint(player, target.getName());
                         else
                             new Message("messages.point.player-offline").set("player", strings[1]).colored().send(player);
                     }
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.set").getString())) {
                     if (strings.length < 2) {
-                        comandosDeAjuda(player);
+                        help(player);
                     } else {
                         String position = strings[1].toLowerCase();
                         if (position.equals("arena") || position.equals("exit")
@@ -81,14 +81,14 @@ public class ChainCommand implements CommandExecutor, Listener {
                             plugin.getConfig().set("locations." + position, LocationUtils.serialize(player.getLocation()));
                             plugin.saveConfig();
                         } else {
-                            comandosDeAjuda(player);
+                            help(player);
                         }
                     }
                 } else {
-                    comandosDeAjuda(player);
+                    help(player);
                 }
             } else {
-                comandosDeAjuda(player);
+                help(player);
             }
         }
         return true;
@@ -143,18 +143,8 @@ public class ChainCommand implements CommandExecutor, Listener {
             joinedPlayers.clear();
         }, 100, 100);
     }
-    private boolean verificaSeTemSpawnESpawnDeatch() {
-        try{
-            Location loc1 = LocationUtils.deserialize(plugin.getConfig().getString("locations.arena"));
-            Location loc2 = LocationUtils.deserialize(plugin.getConfig().getString("locations.exit"));
 
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-
-    private void comandosDeAjuda(Player player) {
+    private void help(Player player) {
         new Message("messages.help.player", true)
                 .set("command_join", new Message("commands.join").getString())
                 .set("command_exit", new Message("commands.exit").getString())
@@ -170,7 +160,7 @@ public class ChainCommand implements CommandExecutor, Listener {
         }
     }
 
-    private void mostraListaDeJogadores(Player player) {
+    private void showPlayerList(Player player) {
         if(chainPlayers.isEmpty()){
             new Message("messages.list.no-players").colored().send(player);
         }else{
@@ -182,12 +172,12 @@ public class ChainCommand implements CommandExecutor, Listener {
 
     }
 
-    private void colocaJogadorNaArenaChain(Player player) {
+    private void putPlayerInArena(Player player) {
         new Message("messages.join.player").set("command_exit", new Message("commands.exit").getString())
                 .colored().send(player);
         player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.arena")));
 
-        if(player.hasPermission("cl.vip")){
+        if(player.hasPermission("chain.vip")){
             player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
             player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, true));
             player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, true));
@@ -226,44 +216,44 @@ public class ChainCommand implements CommandExecutor, Listener {
         chainPlayers.add(player);
     }
 
-    private boolean verificaSeTemItensOuArmadura(Player player) {
-        boolean temItem = false;
-        for(ItemStack item: player.getInventory().getContents()){
-            if(item != null){
-                temItem = true;
+    private boolean verifyInventory(Player player) {
+        boolean hasItem = false;
+        for (ItemStack item: player.getInventory().getContents()) {
+            if (item != null) {
+                hasItem = true;
             }
         }
-        boolean temArmadura = false;
+        boolean hasArmor = false;
         for(ItemStack item: player.getInventory().getArmorContents()){
             if(item != null){
-                temArmadura = true;
+                hasArmor = true;
             }
         }
 
-        if(temItem || temArmadura){
+        if(hasItem || hasArmor){
             new Message("messages.join.error.inventory").colored().send(player);
-            if(temArmadura){
+            if(hasArmor){
                 new Message("messages.join.error.armor").colored().send(player);
             }
         }
-        return temItem;
+        return hasItem;
     }
 
-    private void mostraChainPoint(Player player, String target) {
+    private void showPoint(Player player, String target) {
         int point = points.getOrDefault(target, 0);
         new Message("messages.point.see").set("player", target).set("points", String.valueOf(point)).colored().send(player);
     }
 
     public void removeAllPlayers() {
         for (Player player : chainPlayers) {
-            chainSair(player);
+            chainExit(player);
         }
     }
 
     private ItemStack getEnchantedArmor(Material material, boolean glow) {
         ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Chain armor!"));
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Chainmail Armor"));
         itemMeta.setUnbreakable(true);
         if (glow)
             itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
@@ -272,13 +262,10 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onCommand(PlayerCommandPreprocessEvent e){
+    public void blockCommand(PlayerCommandPreprocessEvent e){
         if(chainPlayers.contains(e.getPlayer())){
-            for (String allowedcmd : plugin.getConfig().getStringList("allowed-cmds")){
-                if (e.getMessage().startsWith(allowedcmd)) {
-                    return;
-                }
-            }
+            for (String allowedcmd : plugin.getConfig().getStringList("allowed-cmds"))
+                if (e.getMessage().startsWith(allowedcmd)) return;
             e.setCancelled(true);
             new Message("messages.arena.blocked-command").set("command_exit", new Message("commands.exit").getString())
                     .colored().send(e.getPlayer());
@@ -286,17 +273,17 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     @EventHandler
-    public void onquit(PlayerQuitEvent e){
+    public void exitByQuit(PlayerQuitEvent e){
         if(chainPlayers.contains(e.getPlayer())){
             Player p = e.getPlayer();
-            this.chainSair(p);
+            this.chainExit(p);
         }
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         if(chainPlayers.contains(e.getEntity().getPlayer())){
-            this.chainSair(e.getEntity().getPlayer());
+            this.chainExit(e.getEntity().getPlayer());
         }
     }
 
@@ -318,7 +305,7 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerTeleportEvent e) {
+    public void onTeleport(PlayerTeleportEvent e) {
         if(chainPlayers.contains(e.getPlayer())){
             e.setCancelled(true);
         }
@@ -331,7 +318,7 @@ public class ChainCommand implements CommandExecutor, Listener {
         }
     }
 
-    private void chainSair(Player player){
+    private void chainExit(Player player){
         chainPlayers.remove(player);
         player.getInventory().clear();
         player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.exit")));
