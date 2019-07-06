@@ -4,9 +4,12 @@ commands:
   cabin: cabin
   list: list
   point: point
-  set: set
+  setloc: setloc
+  setkit: setkit
 
 messages:
+  error:
+    permission: '&cYou are not allowed to do this!'
   arena:
     blocked-command: '&4You can not use this command inside the arena! quit using /chain exit'
     domination:
@@ -21,7 +24,8 @@ messages:
       - '&7[Chain] &e/chain {command_list} &a- List all players in the arena'
       - '&7[Chain] &e/chain {command_point} <nick> &a- Shows the score of a player'
     admin:
-      - '&7[Chain] &c/chain {command_set} <arena/exit/cabin> &7- Sets the positions'
+      - '&7[Chain] &c/chain {command_setloc} <arena/exit/cabin> &7- Sets the positions'
+      - '&7[Chain] &c/chain {command_setkit} <player/vip> &7- Sets the kits'
   join:
     player: '&7[Chain] &2You entered the /chain, to leave /chain {command_exit}.'
     broadcast:
@@ -44,5 +48,7 @@ messages:
     see: '&7[Chain] &2{player}''s points: {points}'
     receive: '&7[Chain] &2You just won &e{points} &2arena points'
     player-offline: '&4{player} is offline!'
-  set:
+  setpos:
     success: '&7[Chain] &aPosition ''{position}'' defined successfully!'
+  setkit:
+    success: '&7[Chain] &aKit ''{kit}'' defined successfully!'

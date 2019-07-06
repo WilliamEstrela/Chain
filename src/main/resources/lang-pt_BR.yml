@@ -4,9 +4,12 @@ commands:
   cabin: camarote
   list: listar
   point: pontos
-  set: setar
+  setloc: setarloc
+  setkit: setarkit
 
 messages:
+  error:
+    permission: '&cVocê não tem permissão para fazer isso!'
   arena:
     blocked-command: '&4Você não pode usar este comando dentro da arena! saia usando /chain {command_exit}'
     domination:
@@ -21,7 +24,8 @@ messages:
       - '&7[Chain] &e/chain {command_list} &a- Mostra os jogadores na arena'
       - '&7[Chain] &e/chain {command_point} <nick> &a- Mostra a pontuação do jogador'
     admin:
-      - '&7[Chain] &c/chain {command_set} <arena/exit/cabin> &7- Define as posições'
+      - '&7[Chain] &c/chain {command_setloc} <arena/exit/cabin> &7- Define as posições'
+      - '&7[Chain] &c/chain {command_setkit} <player/vip> &7- Define os kits'
   join:
     player: '&7[Chain] &2Você entrou no /chain, use ''/chain {command_exit}'' para sair.'
     broadcast:
@@ -44,5 +48,7 @@ messages:
     see: '&7[Chain] &2Pontuação de {player}: {points}'
     receive: '&7[Chain] &2Você acaba de ganhar &e{points} &2pontos na arena!'
     player-offline: '&4{player} está offline!'
-  set:
+  setpos:
     success: '&7[Chain] &aPosição ''{position}'' definida com sucesso!'
+  setkit:
+    success: '&7[Chain] &aKit ''{kit}'' definido com sucesso!'

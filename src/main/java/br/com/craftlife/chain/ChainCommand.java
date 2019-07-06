@@ -1,13 +1,13 @@
 package br.com.craftlife.chain;
 
 import br.com.craftlife.chain.resource.Message;
+import br.com.craftlife.chain.utils.InventoryUtils;
 import br.com.craftlife.chain.utils.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
@@ -71,16 +70,36 @@ public class ChainCommand implements CommandExecutor, Listener {
                         else
                             new Message("messages.point.player-offline").set("player", strings[1]).colored().send(player);
                     }
-                } else if (strings[0].equalsIgnoreCase(new Message("commands.set").getString())) {
-                    if (strings.length < 2) {
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.setloc").getString())) {
+                    if (!player.hasPermission("chain.admin")) {
+                        new Message("messages.error.permission").colored().send(player);
+                        return true;
+                    }
+                    if (strings.length < 2)
                         help(player);
-                    } else {
+                    else {
                         String position = strings[1].toLowerCase();
                         if (position.equals("arena") || position.equals("exit")
                             || position.equals("cabin")){
-                            new Message("messages.set.success").set("position", position).colored().send(player);
+                            new Message("messages.setpos.success").set("position", position).colored().send(player);
                             plugin.getConfig().set("locations." + position, LocationUtils.serialize(player.getLocation()));
                             plugin.saveConfig();
+                        } else {
+                            help(player);
+                        }
+                    }
+                } else if (strings[0].equalsIgnoreCase(new Message("commands.setkit").getString())) {
+                    if (!player.hasPermission("chain.admin")) {
+                        new Message("messages.error.permission").colored().send(player);
+                        return true;
+                    }
+                    if (strings.length < 2)
+                        help(player);
+                    else {
+                        String kit = strings[1].toLowerCase();
+                        if (kit.equals("player") || kit.equals("vip")) {
+                            new Message("messages.setkit.success").set("kit", kit).colored().send(player);
+                            InventoryUtils.saveInventory(kit, player.getInventory());
                         } else {
                             help(player);
                         }
@@ -154,9 +173,10 @@ public class ChainCommand implements CommandExecutor, Listener {
                 .set("command_point", new Message("commands.point").getString())
                 .colored().send(player);
 
-        if (player.isOp()) {
+        if (player.hasPermission("chain.admin")) {
             new Message("messages.help.admin", true)
-                    .set("command_set", new Message("commands.set").getString())
+                    .set("command_setloc", new Message("commands.setloc").getString())
+                    .set("command_setkit", new Message("commands.setkit").getString())
                     .colored().send(player);
         }
     }
@@ -179,29 +199,10 @@ public class ChainCommand implements CommandExecutor, Listener {
         player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.arena")));
 
         if(player.hasPermission("chain.vip")){
-            player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_BLOCK));
-            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, true));
-            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, true));
-            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, true));
-        }else{
-            player.getInventory().setHelmet(new ItemStack(Material.IRON_BLOCK));
-            player.getInventory().setChestplate(this.getEnchantedArmor(Material.CHAINMAIL_CHESTPLATE, false));
-            player.getInventory().setLeggings(this.getEnchantedArmor(Material.CHAINMAIL_LEGGINGS, false));
-            player.getInventory().setBoots(this.getEnchantedArmor(Material.CHAINMAIL_BOOTS, false));
+            InventoryUtils.setKit("vip", player);
+        } else {
+            InventoryUtils.setKit("player", player);
         }
-
-
-        player.getInventory().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
-
-
-        ItemStack bow = new ItemStack(Material.BOW);
-        ItemMeta bowMeta = bow.getItemMeta();
-        bowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
-        bow.setItemMeta(bowMeta);
-        player.getInventory().addItem(new ItemStack(bow));
-
-        player.getInventory().addItem(new ItemStack(Material.ARROW));
-        player.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE,10));
 
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
@@ -249,17 +250,6 @@ public class ChainCommand implements CommandExecutor, Listener {
         for (Player player : chainPlayers) {
             chainExit(player);
         }
-    }
-
-    private ItemStack getEnchantedArmor(Material material, boolean glow) {
-        ItemStack itemStack = new ItemStack(material);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&6Chainmail Armor"));
-        itemMeta.setUnbreakable(true);
-        if (glow)
-            itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

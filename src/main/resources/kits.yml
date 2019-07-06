@@ -1,0 +1,380 @@
+player:
+  contents:
+    '0':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: IRON_SWORD
+    '1':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: BOW
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        enchants:
+          ARROW_INFINITE: 1
+    '2':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: ARROW
+    '3':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: GOLDEN_APPLE
+      amount: 10
+    '4':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '5':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '6':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '7':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '8':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '9':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '10':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '11':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '12':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '13':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '14':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '15':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '16':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '17':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '18':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '19':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '20':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '21':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '22':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '23':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '24':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '25':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '26':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '27':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '28':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '29':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '30':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '31':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '32':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '33':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '34':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '35':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '36':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_BOOTS
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        Unbreakable: true
+    '37':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_LEGGINGS
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        Unbreakable: true
+    '38':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_CHESTPLATE
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        Unbreakable: true
+    '39':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: IRON_BLOCK
+    '40':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+vip:
+  contents:
+    '0':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: IRON_SWORD
+    '1':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: BOW
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        enchants:
+          ARROW_INFINITE: 1
+    '2':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: ARROW
+    '3':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: GOLDEN_APPLE
+      amount: 10
+    '4':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '5':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '6':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '7':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '8':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '9':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '10':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '11':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '12':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '13':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '14':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '15':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '16':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '17':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '18':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '19':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '20':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '21':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '22':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '23':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '24':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '25':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '26':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '27':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '28':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '29':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '30':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '31':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '32':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '33':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '34':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '35':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
+    '36':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_BOOTS
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        enchants:
+          DURABILITY: 1
+        Unbreakable: true
+    '37':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_LEGGINGS
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        enchants:
+          DURABILITY: 1
+        Unbreakable: true
+    '38':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CHAINMAIL_CHESTPLATE
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §6Chainmail Armor
+        enchants:
+          DURABILITY: 1
+        Unbreakable: true
+    '39':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: DIAMOND_BLOCK
+    '40':
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: LEGACY_AIR
