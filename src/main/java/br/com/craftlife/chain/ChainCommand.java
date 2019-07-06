@@ -115,15 +115,19 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     private void initSchedulers() {
+        int delayCollectPoints = plugin.getConfig().getInt("collect-points.delay") * 20;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.getInstance(), () -> {
             List<String> dominants = new ArrayList<>();
             int dominantPoints = 0;
             for (Player player : chainPlayers) {
                 int points = 0;
-                for (ItemStack itemStack : player.getInventory().getContents()){
+                for (ItemStack itemStack : player.getInventory().getStorageContents()){
                     if (itemStack == null) continue;
-                    if (itemStack.getType().equals(Material.DIAMOND_BLOCK) || itemStack.getType().equals(Material.IRON_BLOCK)){
-                        points += itemStack.getAmount();
+                    for (String str : plugin.getConfig().getStringList("collect-points.items")) {
+                        String[] values = str.split(";");
+                        if (itemStack.getType().equals(Material.getMaterial(values[0]))) {
+                            points += itemStack.getAmount() * Integer.valueOf(values[1]);
+                        }
                     }
                 }
                 int realPoints = points - 1;
@@ -131,7 +135,7 @@ public class ChainCommand implements CommandExecutor, Listener {
                 player.getInventory().remove(Material.DIAMOND_BLOCK);
                 player.getInventory().remove(Material.IRON_BLOCK);
                 if (realPoints != 0)
-                    new Message("messages.point.receiver").set("points", String.valueOf(realPoints)).colored().send(player);
+                    new Message("messages.point.receive").set("points", String.valueOf(realPoints)).colored().send(player);
                 if (realPoints >= dominantPoints) {
                     if (realPoints == dominantPoints)
                         dominants.add(player.getName());
@@ -150,7 +154,8 @@ public class ChainCommand implements CommandExecutor, Listener {
                     new Message("messages.arena.domination.more").set("players", alldominants).colored().broadcast();
                 }
             }
-        }, 6000, 6000);
+        }, delayCollectPoints, delayCollectPoints);
+        int delayJoinMessage = plugin.getConfig().getInt("join-message-delay") * 20;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(ChainPlugin.getInstance(), () -> {
             if (!joinedPlayers.isEmpty()) {
                 if (joinedPlayers.size() == 1) {
@@ -161,7 +166,7 @@ public class ChainCommand implements CommandExecutor, Listener {
                 }
             }
             joinedPlayers.clear();
-        }, 100, 100);
+        }, delayJoinMessage, delayJoinMessage);
     }
 
     private void help(Player player) {

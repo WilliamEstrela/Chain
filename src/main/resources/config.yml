@@ -6,6 +6,14 @@ allowed-cmds:
   - '/g '
   - '/. '
 
+join-message-delay: 5
+
+collect-points:
+  delay: 300
+  items:
+    - DIAMOND_BLOCK;1
+    - IRON_BLOCK;1
+
 locations:
   arena: world;0;100;0;0;0
   exit: world;0;100;0;0;0
