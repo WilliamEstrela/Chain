@@ -130,17 +130,16 @@ public class ChainCommand implements CommandExecutor, Listener {
                         }
                     }
                 }
-                int realPoints = points - 1;
-                this.points.put(player.getName(), this.points.getOrDefault(player, 0) + realPoints);
+                this.points.put(player.getName(), this.points.getOrDefault(player.getName(), 0) + points);
                 player.getInventory().remove(Material.DIAMOND_BLOCK);
                 player.getInventory().remove(Material.IRON_BLOCK);
-                if (realPoints != 0)
-                    new Message("messages.point.receive").set("points", String.valueOf(realPoints)).colored().send(player);
-                if (realPoints >= dominantPoints) {
-                    if (realPoints == dominantPoints)
+                if (points != 0)
+                    new Message("messages.point.receive").set("points", String.valueOf(points)).colored().send(player);
+                if (points >= dominantPoints) {
+                    if (points == dominantPoints)
                         dominants.add(player.getName());
                     else {
-                        dominantPoints = realPoints;
+                        dominantPoints = points;
                         dominants.clear();
                         dominants.add(player.getName());
                     }
