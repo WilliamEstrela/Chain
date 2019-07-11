@@ -10,6 +10,7 @@ commands:
 messages:
   error:
     permission: '&cVocê não tem permissão para fazer isso!'
+    location-not-defined: '&cUma das localizações necessarias não foram definidas! contate um administrador.'
   arena:
     blocked-command: '&4Você não pode usar este comando dentro da arena! saia usando /chain {command_exit}'
     domination:

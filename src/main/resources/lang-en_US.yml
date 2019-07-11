@@ -10,6 +10,7 @@ commands:
 messages:
   error:
     permission: '&cYou are not allowed to do this!'
+    location-not-defined: '&cOne of the required locations has not been set! please contact an administrator!'
   arena:
     blocked-command: '&4You can not use this command inside the arena! quit using /chain exit'
     domination:

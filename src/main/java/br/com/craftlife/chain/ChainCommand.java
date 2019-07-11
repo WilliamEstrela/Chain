@@ -33,10 +33,14 @@ public class ChainCommand implements CommandExecutor, Listener {
     private ArrayList<Player> chainPlayers = new ArrayList<>();
     private HashMap<String, Integer> points = new HashMap<>();
     private List<String> joinedPlayers = new ArrayList<>();
+    private HashMap<String, Location> locations = new HashMap<>();
 
     public ChainCommand(ChainPlugin plugin) {
         this.plugin = plugin;
         initSchedulers();
+        locations.put("arena", LocationUtils.deserialize(plugin.getConfig().getString("locations.arena")));
+        locations.put("exit", LocationUtils.deserialize(plugin.getConfig().getString("locations.exit")));
+        locations.put("cabin", LocationUtils.deserialize(plugin.getConfig().getString("locations.cabin")));
     }
 
     @Override
@@ -56,7 +60,11 @@ public class ChainCommand implements CommandExecutor, Listener {
                         new Message("messages.exit.error").colored().send(player);
                     }
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.cabin").getString())) {
-                    player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.cabin")));
+                    if (locations.get("cabin") == null) {
+                        new Message("messages.error.location-not-defined").colored().send(player);
+                        return true;
+                    }
+                    player.teleport(locations.get("cabin"));
                     new Message("messages.cabin.success").colored().send(player);
                 } else if (strings[0].equalsIgnoreCase(new Message("commands.list").getString())) {
                     showPlayerList(player);
@@ -82,7 +90,9 @@ public class ChainCommand implements CommandExecutor, Listener {
                         if (position.equals("arena") || position.equals("exit")
                             || position.equals("cabin")){
                             new Message("messages.setpos.success").set("position", position).colored().send(player);
-                            plugin.getConfig().set("locations." + position, LocationUtils.serialize(player.getLocation()));
+                            Location loc = player.getLocation();
+                            locations.put(position, loc);
+                            plugin.getConfig().set("locations." + position, LocationUtils.serialize(loc));
                             plugin.saveConfig();
                         } else {
                             help(player);
@@ -198,9 +208,13 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     private void putPlayerInArena(Player player) {
+        if (locations.get("arena") == null || locations.get("exit") == null) {
+            new Message("messages.error.location-not-defined").colored().send(player);
+            return;
+        }
         new Message("messages.join.player").set("command_exit", new Message("commands.exit").getString())
                 .colored().send(player);
-        player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.arena")));
+        player.teleport(locations.get("arena"));
 
         if(player.hasPermission("chain.vip")){
             InventoryUtils.setKit("vip", player);
@@ -314,9 +328,13 @@ public class ChainCommand implements CommandExecutor, Listener {
     }
 
     private void chainExit(Player player){
+        if (locations.get("exit") == null) {
+            new Message("messages.error.location-not-defined").colored().send(player);
+            return;
+        }
         chainPlayers.remove(player);
         player.getInventory().clear();
-        player.teleport(LocationUtils.deserialize(plugin.getConfig().getString("locations.exit")));
+        player.teleport(locations.get("exit"));
         new Message("messages.exit.success").colored().send(player);
     }
 }

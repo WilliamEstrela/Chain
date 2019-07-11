@@ -15,7 +15,4 @@ collect-points:
     - IRON_BLOCK;1
 
 locations:
-  arena: world;0;100;0;0;0
-  exit: world;0;100;0;0;0
-  cabin: world;0;100;0;0;0
 

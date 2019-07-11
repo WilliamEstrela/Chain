@@ -15,6 +15,7 @@ public class LocationUtils {
     }
 
     public static Location deserialize(String locationSerialized) {
+        if (locationSerialized == null) return null;
         String[] args = locationSerialized.split(";");
         return new Location(
                 Bukkit.getWorld(args[0]),
