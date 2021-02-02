@@ -212,6 +212,10 @@ public class ChainCommand implements CommandExecutor, Listener {
             new Message("messages.error.location-not-defined").colored().send(player);
             return;
         }
+        PlayerTeleportEvent event = new PlayerTeleportEvent(player, player.getLocation(), locations.get("arena"), PlayerTeleportEvent.TeleportCause.COMMAND);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
         new Message("messages.join.player").set("command_exit", new Message("commands.exit").getString())
                 .colored().send(player);
         player.teleport(locations.get("arena"));
